@@ -1,1 +1,1 @@
-from .sc2heoca import mapping
+from .sc2heoca import load_model,scquery
