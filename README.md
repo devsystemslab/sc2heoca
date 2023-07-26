@@ -38,7 +38,7 @@ heoca_query = Query(model_dir=model_dir,
 
 adata_query = heoca_query.run_scpoli()
 
-sc.pl.umap(adata2, color='predict_level_2', frameon=False, size=5)
+sc.pl.umap(adata_query, color='predict_level_2', frameon=False, size=5)
 
 ```
 ![](figures/GSM5628936_SCNPO2.png)
