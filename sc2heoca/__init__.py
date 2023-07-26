@@ -1,1 +1,3 @@
-# from .sc2heoca import loadmodel,scquery,adata_latent_source
+import os
+
+PACKAGE_DIR = os.path.dirname(__file__)

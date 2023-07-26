@@ -15,16 +15,31 @@ import anndata
 import scanpy as sc
 from scarches.models.scpoli import scPoli
 
+from . import PACKAGE_DIR
+
+def clear_genes(adata):
+    gene_file = os.path.join(PACKAGE_DIR, "db", "hg_genes_clear.txt")
+
+    clear_genes = pd.read_csv(gene_file, header=None)[0].tolist()
+    sub_clear_genes = [i for i in clear_genes if i in adata.var.index.tolist()]
+    adata = adata[:, sub_clear_genes]
+    
+    return adata
+
 def init_sample(adata0, empty_adata):
     
     malat1 = adata0.var_names.str.startswith('MALAT1')
     mito_genes = adata0.var_names.str.startswith('MT-')
     rb_genes = adata0.var_names.str.startswith(("RPS","RPL"))
+    hb_genes = adata0.var_names.str.contains('^HB[^(P)]')
 
     remove = np.add(mito_genes, malat1)
     remove = np.add(remove, rb_genes)
+    remove = np.add(remove, hb_genes)
     keep = np.invert(remove)
     adata0 = adata0[:,keep]
+
+    adata0 = clear_genes(adata0)
 
     adata0 = anndata.AnnData.concatenate(*[adata0, empty_adata], join='outer', fill_value=0)
 
