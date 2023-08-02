@@ -17,6 +17,14 @@ from scarches.models.scpoli import scPoli
 
 from . import PACKAGE_DIR
 
+def load_colorplate():
+    color_file = os.path.join(PACKAGE_DIR, "db", "gut_scpoli_color.txt")
+
+    plate_level_all = pd.read_csv(color_file, sep='\t', header=None, index_col=0)
+    plate_level_all = plate_level_all.to_dict()[1]
+
+    return plate_level_all
+
 def clear_genes(adata):
     gene_file = os.path.join(PACKAGE_DIR, "db", "hg_genes_clear.txt")
 
@@ -73,6 +81,7 @@ class Query:
         else:
             self.adata0.obs['sample_id']='sample2query'
 
+        self.colorplate = load_colorplate()
 
     def run_scpoli(self):
 

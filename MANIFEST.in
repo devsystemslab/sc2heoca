@@ -1,1 +1,2 @@
 include sc2heoca/db/hg_genes_clear.txt
+include sc2heoca/db/gut_scpoli_color.txt

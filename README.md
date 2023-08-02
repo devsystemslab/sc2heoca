@@ -29,7 +29,7 @@ import scanpy as sc
 from sc2heoca.sc2heoca import Query
 
 # read sample
-adata = sc.read_10x_mtx('Chan_NatCommun_2022/', prefix = 'GSM5628936_SCNPO2-')
+adata = sc.read_10x_mtx('Chan_NatCommun_2022', prefix = 'GSM5628936_SCNPO2-')
 
 model_dir = "heoca_scpoli_model.v1.0"
 heoca_query = Query(model_dir=model_dir, 
@@ -38,7 +38,8 @@ heoca_query = Query(model_dir=model_dir,
 
 adata_query = heoca_query.run_scpoli()
 
-sc.pl.umap(adata_query, color='predict_level_2', frameon=False, size=5)
+sc.pl.umap(adata2, color=['predict_level_2'], palette=heoca_query.colorplate,
+           frameon=False, size=5)
 
 ```
 ![](figures/GSM5628936_SCNPO2.png)
