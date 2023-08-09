@@ -20,7 +20,7 @@ rm heoca_scpoli_model.v1.0.zip
 * [HLOCA model (lung organoid)](https://zenodo.org/record/8186773/files/hioca_scpoli_model.v1.0.zip)
 * [HICA model (intestine tissue)](https://zenodo.org/record/8186773/files/hica_scpoli_model.v1.0.zip)
 
-## Query new single cell organoid data
+## Query new organoid single cell RNA-seq data
 
 Example data download from [GEO(GSM5628936)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5628936)
 
