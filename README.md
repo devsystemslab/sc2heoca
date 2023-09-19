@@ -42,4 +42,4 @@ sc.pl.umap(adata2, color=['predict_level_2'], palette=heoca_query.colorplate,
            frameon=False, size=5)
 
 ```
-![](figures/GSM5628936_SCNPO2.png)
+<td><img src="figures/GSM5628936_SCNPO2.png" width="400" /></img></a></td>
