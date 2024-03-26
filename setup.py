@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name="sc2heoca",
-    version="0.1.0",
+    version="0.1.1",
     author=author,
     author_email=author_email,
     description=description,
@@ -22,6 +22,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
-    python_requires=">=3.9",
+    python_requires="==3.9.16",
 )
 

@@ -3,8 +3,11 @@ A method to query new organoid scRNA-seq data to HEOCA
 
 ## Install
 ```
+conda create -n sc2heoca python==3.9.16
+conda activate sc2heoca
+
 git clone git@github.com:devsystemslab/sc2heoca.git
-pip install sc2heoca
+pip install sc2heoca/
 ```
 
 ## Download the reference model from Zenodo
