@@ -46,3 +46,8 @@ sc.pl.umap(adata2, color=['predict_level_2'], palette=heoca_query.colorplate,
 
 ```
 <td><img src="figures/GSM5628936_SCNPO2.png" width="400" /></img></a></td>
+
+## Help and Support
+
+* The preferred way to get support is through the [Github issues page](https://github.com/devsystemslab/sc2heoca/issues).
+
