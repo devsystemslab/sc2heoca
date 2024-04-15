@@ -10,6 +10,7 @@ from sklearn import preprocessing
 from scipy.io import mmread
 from scipy import sparse
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import NearestNeighbors
 
 import anndata
 import scanpy as sc
@@ -164,11 +165,18 @@ class Query:
             self.adata_latent_source.obs.level_3_late)
         adata_latent.obs['predict_level_3'] = knn.predict(adata_latent.to_df())
 
+        # predict dist
+        knn = NearestNeighbors(n_neighbors=10)
+        knn.fit(self.adata_latent_source.to_df())
+        knn_res = knn.kneighbors(adata_latent.to_df())
+        mydist = pd.DataFrame(knn_res[0]).mean(1)
+
         adata0.obs['predict_tissue']=adata_latent.obs.predict_tissue
         adata0.obs['predict_level_1']=adata_latent.obs.predict_level_1
         adata0.obs['predict_level_2']=adata_latent.obs.predict_level_2
         adata0.obs['predict_level_3']=adata_latent.obs.predict_level_3
         adata0.obsm['X_umap'] = adata_latent.obsm['X_umap']
+        adata0.obs['mean_dist'] = mydist.tolist()
 
         merged_adata = anndata.AnnData.concatenate(*[adata0, self.adata_latent_source], join='outer', fill_value=0)
         
