@@ -41,7 +41,7 @@ heoca_query = Query(model_dir=model_dir,
 
 adata_query = heoca_query.run_scpoli()
 
-sc.pl.umap(adata2, color=['predict_level_2'], palette=heoca_query.colorplate,
+sc.pl.umap(adata_query, color=['predict_level_2'], palette=heoca_query.colorplate,
            frameon=False, size=5)
 
 ```
