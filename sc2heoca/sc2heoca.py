@@ -208,15 +208,20 @@ class Query:
         de_res = pd.DataFrame()
 
         # adata_merged.obs.predict_level_2 = adata_merged.obs.predict_level_2.astype('category')
+
         for celltype in adata_subset.obs.level_2.astype('str').unique():
-            adata_merged_sub = adata_merged[(adata_merged.obs.level_2_late==celltype)|
-                                        (adata_merged.obs.predict_level_2==celltype)]
+            adata_query_counts = self.adata_query.obs.predict_level_2.value_counts()
+            
+            if celltype in adata_query_counts and adata_query_counts[celltype]:
 
-            sc.tl.rank_genes_groups(adata_merged_sub, 'sample_state', method='wilcoxon',key_added = "wilcoxon")
+                adata_merged_sub = adata_merged[(adata_merged.obs.level_2_late==celltype)|
+                                            (adata_merged.obs.predict_level_2==celltype)]
 
-            de_res[f'atlas_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='atlas', key='wilcoxon')['names']
-            de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', key='wilcoxon')['names']
+                sc.tl.rank_genes_groups(adata_merged_sub, 'sample_state', method='wilcoxon',key_added = "wilcoxon")
 
-        return de_res
+                de_res[f'atlas_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='atlas', key='wilcoxon')['names']
+                de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', key='wilcoxon')['names']
+
+            return de_res
 
 
