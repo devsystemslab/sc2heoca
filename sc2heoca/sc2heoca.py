@@ -215,13 +215,13 @@ class Query:
             if celltype in adata_query_counts and adata_query_counts[celltype]>=5:
 
                 adata_merged_sub = adata_merged[(adata_merged.obs.level_2_late==celltype)|
-                                            (adata_merged.obs.predict_level_2==celltype)]
+                                            (adata_merged.obs.predict_level_2==celltype)].copy()
 
                 sc.tl.rank_genes_groups(adata_merged_sub, 'sample_state', method='wilcoxon',key_added = "wilcoxon")
 
                 de_res[f'atlas_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='atlas', key='wilcoxon')['names']
                 de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', key='wilcoxon')['names']
 
-            return de_res
+        return de_res
 
 
