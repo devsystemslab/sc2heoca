@@ -10,6 +10,15 @@ git clone git@github.com:devsystemslab/sc2heoca.git
 pip install sc2heoca/
 ```
 
+## Download the reference atlas from Zenodo
+```
+mkdir -p heoca_atlas
+cd heoca_atlas
+wget https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad
+```
+### HEOCA atlas
+* [HEOCA data (all organoids)](https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad)
+
 ## Download the reference model from Zenodo
 ```
 mkdir -p heoca_scpoli_model.v1.0
@@ -17,9 +26,6 @@ wget https://zenodo.org/record/8186773/files/heoca_scpoli_model.v1.0.zip
 tar xvzf heoca_scpoli_model.v1.0.zip -C heoca_scpoli_model.v1.0
 rm heoca_scpoli_model.v1.0.zip
 ```
-
-### HEOCA atlas
-* [HEOCA data (all organoids)](https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad)
 
 ### All available reference models from HEOCA project
 * [HEOCA model (all organoids)](https://zenodo.org/record/8186773/files/heoca_scpoli_model.v1.0.zip)
