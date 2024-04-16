@@ -177,6 +177,10 @@ class Query:
         adata0.obs['predict_level_3']=adata_latent.obs.predict_level_3
         adata0.obsm['X_umap'] = adata_latent.obsm['X_umap']
         adata0.obs['mean_dist'] = mydist.tolist()
+    
+        return adata0
+    
+    def merge4plot(self, adata0):
 
         merged_adata = anndata.AnnData.concatenate(*[adata0, self.adata_latent_source], join='outer', fill_value=0)
         
