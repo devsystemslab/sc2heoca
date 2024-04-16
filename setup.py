@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name="sc2heoca",
-    version="0.1.1",
+    version="0.2.0",
     author=author,
     author_email=author_email,
     description=description,
