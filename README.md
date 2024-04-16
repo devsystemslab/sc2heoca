@@ -10,28 +10,29 @@ git clone git@github.com:devsystemslab/sc2heoca.git
 pip install sc2heoca/
 ```
 
-## Download the reference atlas from Zenodo
+## Prepare reference atlas and model
+
+* Download the reference atlas from Zenodo
 ```
 mkdir -p heoca_atlas
 cd heoca_atlas
 wget https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad
 ```
-### HEOCA atlas
-* [HEOCA data (all organoids)](https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad)
 
-## Download the reference model from Zenodo
+* Download the reference model from Zenodo
 ```
-mkdir -p heoca_scpoli_model.v1.0
 wget https://zenodo.org/record/8186773/files/heoca_scpoli_model.v1.0.zip
-tar xvzf heoca_scpoli_model.v1.0.zip -C heoca_scpoli_model.v1.0
+tar xvzf heoca_scpoli_model.v1.0.zip -C heoca_atlas
 rm heoca_scpoli_model.v1.0.zip
 ```
 
-### All available reference models from HEOCA project
-* [HEOCA model (all organoids)](https://zenodo.org/record/8186773/files/heoca_scpoli_model.v1.0.zip)
-* [HIOCA model (intestine organoid)](https://zenodo.org/record/8186773/files/hioca_scpoli_model.v1.0.zip)
-* [HLOCA model (lung organoid)](https://zenodo.org/record/8186773/files/hioca_scpoli_model.v1.0.zip)
-* [HICA model (intestine tissue)](https://zenodo.org/record/8186773/files/hica_scpoli_model.v1.0.zip)
+* Reference atlas and available reference models from HEOCA project
+
+    - [HEOCA atlas (all organoids)](https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad)
+    - [HEOCA model (all organoids)](https://zenodo.org/record/8186773/files/heoca_scpoli_model.v1.0.zip)
+    - [HIOCA model (intestine organoid)](https://zenodo.org/record/8186773/files/hioca_scpoli_model.v1.0.zip)
+    - [HLOCA model (lung organoid)](https://zenodo.org/record/8186773/files/hioca_scpoli_model.v1.0.zip)
+    - [HICA model (intestine tissue)](https://zenodo.org/record/8186773/files/hica_scpoli_model.v1.0.zip)
 
 ## Query new organoid single cell RNA-seq data
 
@@ -40,21 +41,37 @@ Example data download from [GEO(GSM5628936)](https://www.ncbi.nlm.nih.gov/geo/qu
 ```
 import scanpy as sc
 from sc2heoca.sc2heoca import Query
+```
 
-# read sample
-adata = sc.read_10x_mtx('Chan_NatCommun_2022', prefix = 'GSM5628936_SCNPO2-')
+* Load new sample
+```
+adata_query = sc.read_10x_mtx(path='Chan_NatCommun_2022', 
+                              prefix='GSM5628936_SCNPO2-')
+```
+* Query new sample
+```
+model_dir = "heoca_atlas"
+query = Query(model_dir=model_dir, 
+              adata_query=adata_query, 
+              sample_name='GSM5628936_SCNPO2',
+              load_ref=True)
+query.run_scpoli()
+```
 
-model_dir = "heoca_scpoli_model.v1.0"
-heoca_query = Query(model_dir=model_dir, 
-                    adata=adata, 
-                    sample_name='GSM5628936_SCNPO2')
-
-adata_query = heoca_query.run_scpoli()
-
-sc.pl.umap(adata_query, color=['predict_level_2'], palette=heoca_query.colorplate,
+* Plot query result UMAP
+```
+adata4plot = query.merge4plot()
+sc.pl.umap(adata4plot, color=['predict_level_2'], palette=query.colorplate,
            frameon=False, size=5)
+```
+
+* Find DE genes to HECOA
 
 ```
+de_res = query.find_de_genes(tissue='lung')
+
+```
+
 <td><img src="figures/GSM5628936_SCNPO2.png" width="400" /></img></a></td>
 
 ## Help and Support
