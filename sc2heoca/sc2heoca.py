@@ -211,8 +211,8 @@ class Query:
 
         for celltype in adata_subset.obs.level_2.astype('str').unique():
             adata_query_counts = self.adata_query.obs.predict_level_2.value_counts()
-            
-            if celltype in adata_query_counts and adata_query_counts[celltype]:
+
+            if celltype in adata_query_counts and adata_query_counts[celltype]>=5:
 
                 adata_merged_sub = adata_merged[(adata_merged.obs.level_2_late==celltype)|
                                             (adata_merged.obs.predict_level_2==celltype)]
