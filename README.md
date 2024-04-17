@@ -54,16 +54,14 @@ adata_query = sc.read_10x_mtx(path='Chan_NatCommun_2022',
 * Query new sample
 ```
 model_dir = "heoca_atlas"
-query = Query(model_dir=model_dir, 
-              adata_query=adata_query, 
-              sample_name='GSM5628936_SCNPO2',
-              load_ref=True)
-query.run_scpoli()
+query = Query(model_dir=model_dir, load_ref=True)
+adata_query = query.run_scpoli(adata_query=adata_query, 
+                               sample_name='GSM5628936_SCNPO2')
 ```
 
 * Plot query result UMAP
 ```
-adata4plot = query.merge4plot()
+adata4plot = query.merge4plot(adata_query)
 sc.pl.umap(adata4plot, color=['predict_level_2'], palette=query.colorplate,
            frameon=False, size=5)
 ```
@@ -71,7 +69,7 @@ sc.pl.umap(adata4plot, color=['predict_level_2'], palette=query.colorplate,
 * Find DE genes to HECOA
 
 ```
-de_res = query.find_de_genes(tissue='lung')
+de_res = query.find_de_genes(adata_query, tissue='lung')
 
 ```
 

@@ -68,28 +68,26 @@ def init_sample(adata, empty_adata):
 
 class Query:
 
-    def __init__(self, model_dir, adata_query, sample_name, load_ref=False):
+    def __init__(self, model_dir, load_ref=False):
         self.scpoli_model = f"{model_dir}/scpoli_model/"
         self.adata_latent_source = sc.read_h5ad(f"{model_dir}/adata_latent_source.h5ad")
         self.umap_model = pickle.load(open(f"{model_dir}/umap_model.sav", 'rb'))
         self.empty_adata = sc.read_h5ad(f"{model_dir}/empty.h5ad")
         
-        self.adata_query = adata_query
-
-        self.sample_name = sample_name
-        if sample_name is not None:
-            self.adata_query.obs['sample_id'] = sample_name
-        else:
-            self.adata_query.obs['sample_id']='sample2query'
 
         self.colorplate = load_colorplate()
 
         if load_ref:
             self.adata = sc.read_h5ad(f"{model_dir}/gut_scpoli_integration.h5ad")
     
-    def run_scpoli(self):
+    def run_scpoli(self, adata_query, sample_name):
 
-        adata = init_sample(self.adata_query, self.empty_adata)
+        if sample_name is not None:
+            adata_query.obs['sample_id'] = sample_name
+        else:
+            adata_query.obs['sample_id']='sample2query'
+
+        adata = init_sample(adata_query, self.empty_adata)
 
         scpoli_query = scPoli.load_query_data(
             adata=adata,
@@ -181,12 +179,10 @@ class Query:
         adata.obsm['X_umap'] = adata_latent.obsm['X_umap']
         adata.obs['mean_dist'] = mydist.tolist()
 
-        self.adata_query = adata
-
-        return self
+        return adata
     
-    def merge4plot(self):
-        merged_adata = anndata.AnnData.concatenate(*[self.adata_query, 
+    def merge4plot(self, adata_query):
+        merged_adata = anndata.AnnData.concatenate(*[adata_query, 
                                                      self.adata_latent_source], join='outer', fill_value=0)
         
         ##TODO magic way to remove var
@@ -194,23 +190,23 @@ class Query:
 
         return merged_adata
 
-    def find_de_genes(self, tissue, detail_tissue=None):
+    def find_de_genes(self, adata_query, tissue, detail_tissue=None):
         if detail_tissue is None:
             adata_subset = self.adata[(self.adata.obs.tissue==tissue)].copy()
         else:
             adata_subset = self.adata[(self.adata.obs.tissue==tissue)&(self.adata.obs.detail_tissue==detail_tissue)].copy()
             
         adata_subset.obs['sample_state'] = 'atlas'
-        self.adata_query.obs['sample_state'] = 'query'
+        adata_query.obs['sample_state'] = 'query'
         
-        adata_merged = anndata.AnnData.concatenate(*[adata_subset, self.adata_query], join='outer', fill_value=0)
+        adata_merged = anndata.AnnData.concatenate(*[adata_subset, adata_query], join='outer', fill_value=0)
         
         de_res = pd.DataFrame()
 
         # adata_merged.obs.predict_level_2 = adata_merged.obs.predict_level_2.astype('category')
 
         for celltype in adata_subset.obs.level_2.astype('str').unique():
-            adata_query_counts = self.adata_query.obs.predict_level_2.value_counts()
+            adata_query_counts = adata_query.obs.predict_level_2.value_counts()
 
             if celltype in adata_query_counts and adata_query_counts[celltype]>=5:
 
