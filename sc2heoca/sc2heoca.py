@@ -66,6 +66,19 @@ def init_sample(adata, empty_adata):
 
     return adata
 
+def find_uni_genes(auc_de_res_exp, auc_de_res_ctrl, cutoff):
+    exp_genes = auc_de_res_exp[(auc_de_res_exp.auc>cutoff)&
+                     (auc_de_res_exp.pvals_adj<0.01)&
+                     (auc_de_res_exp.group=='query')].names.tolist()
+
+    ctrl_genes = auc_de_res_ctrl[(auc_de_res_ctrl.auc>cutoff)&
+                     (auc_de_res_ctrl.pvals_adj<0.01)&
+                     (auc_de_res_ctrl.group=='query')].names.tolist()
+
+    uni_genes = [i for i in exp_genes if i not in ctrl_genes]
+    
+    return uni_genes
+
 class Query:
 
     def __init__(self, model_dir, load_ref=False):
@@ -190,7 +203,7 @@ class Query:
 
         return merged_adata
 
-    def find_de_genes(self, adata_query, tissue, detail_tissue=None):
+    def __find_de_genes(self, tissue, adata_query, detail_tissue=None):
         if detail_tissue is None:
             adata_subset = self.adata[(self.adata.obs.tissue==tissue)].copy()
         else:
@@ -201,7 +214,7 @@ class Query:
         
         adata_merged = anndata.AnnData.concatenate(*[adata_subset, adata_query], join='outer', fill_value=0)
         
-        de_res = pd.DataFrame()
+        de_res = {}
 
         # adata_merged.obs.predict_level_2 = adata_merged.obs.predict_level_2.astype('category')
 
@@ -214,10 +227,29 @@ class Query:
                                             (adata_merged.obs.predict_level_2==celltype)].copy()
 
                 sc.tl.rank_genes_groups(adata_merged_sub, 'sample_state', method='wilcoxon',key_added = "wilcoxon")
-
-                de_res[f'atlas_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='atlas', key='wilcoxon')['names']
-                de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', key='wilcoxon')['names']
+                
+                # de_res[f'atlas_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='atlas', key='wilcoxon')['names']
+                # de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', key='wilcoxon')['names']
+                de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', 
+                                                                        key='wilcoxon', log2fc_min=1, 
+                                                                        pval_cutoff=0.01)['names'].tolist()
 
         return de_res
 
+    def find_de_genes(self, tissue, adata_query, adata_ctrl=None, detail_tissue=None):
+        if adata_ctrl is None:
+            de_res = self.__find_de_genes(tissue, adata_query, detail_tissue=detail_tissue)
+            de_res_final = pd.DataFrame.from_dict(de_res, orient='index').T
+        else:
+            de_res1 = self.__find_de_genes(tissue, adata_query, detail_tissue=detail_tissue)
+            de_res2 = self.__find_de_genes(tissue, adata_ctrl, detail_tissue=detail_tissue)
 
+            uni_genes={}
+            for i in de_res1:
+                if i in de_res2:
+                    uni_genes[i] = [j for j in de_res1[i] if j not in de_res2[i]]
+                    
+            de_res_final = pd.DataFrame.from_dict(uni_genes, orient='index').T
+    
+        return de_res_final
+    
