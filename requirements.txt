@@ -7,3 +7,4 @@ pickleshare==0.7.5
 scarches==0.5.7
 umap-learn==0.5.3
 scipy==1.9.3
+wilcoxauc @ git+https://github.com/bioqxu/wilcoxauc.git
