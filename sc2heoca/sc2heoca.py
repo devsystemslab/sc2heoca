@@ -81,14 +81,11 @@ def find_uni_genes(auc_de_res_exp, auc_de_res_ctrl, cutoff):
     return uni_genes
 
 class Query:
-
     def __init__(self, model_dir, load_ref=False):
         self.scpoli_model = f"{model_dir}/scpoli_model/"
         self.adata_latent_source = sc.read_h5ad(f"{model_dir}/adata_latent_source.h5ad")
         self.umap_model = pickle.load(open(f"{model_dir}/umap_model.sav", 'rb'))
         self.empty_adata = sc.read_h5ad(f"{model_dir}/empty.h5ad")
-        
-
         self.colorplate = load_colorplate()
 
         if load_ref:
@@ -126,8 +123,6 @@ class Query:
             eta=10,
             alpha_epoch_anneal=100
         )
-
-        results_dict = scpoli_query.classify(adata.X, adata.obs["sample_id"].values)
 
         #get latent representation of query data
         data_latent= scpoli_query.get_latent(
@@ -211,14 +206,10 @@ class Query:
             adata_subset = self.adata[(self.adata.obs.tissue==tissue)&(self.adata.obs.detail_tissue==detail_tissue)].copy()
             
         adata_subset.obs['sample_state'] = 'atlas'
-        adata_query.obs['sample_state'] = 'query'
-        
+        adata_query.obs['sample_state'] = 'query'        
         adata_merged = anndata.AnnData.concatenate(*[adata_subset, adata_query], join='outer', fill_value=0)
         
         de_res = {}
-
-        # adata_merged.obs.predict_level_2 = adata_merged.obs.predict_level_2.astype('category')
-
         for celltype in adata_subset.obs.level_2.astype('str').unique():
             adata_query_counts = adata_query.obs.predict_level_2.value_counts()
 
