@@ -2,18 +2,19 @@ biliarysystem	#A73030
 intestine	#91D1C2
 liver	#8F7700
 lung	#F39B7F
-pancreas	#B09C85
+pancreas	#DC0000
 prostate	#4A6990
 salivarygland	#3B3B3B
-stomach	#DC0000
+stomach	#B09C85
 thyroid	#7E6148
 epithelial	#0073C2
 mesenchymal	#a3e3af
-neural	#868686
+stromal	#a3e3af
+neural	#111111
 endothelial	#CD534C
 immune	#c251a1
-stem cells	#225805
-enterocytes	#ED496F
+stem cells	#777777
+enterocytes	#225805
 stromal 2 (NPY)	#e4b974
 colonocytes	#FFB300
 goblet cells	#8e3101
@@ -25,11 +26,11 @@ pericytes	#573794
 Microfold cells	#f82745
 mesoderm 2 (ZEB2)	#6435e0
 schwann cell	#027ffe
-basal cells	#16f648
+basal cells	#E68A54
 ciliated cells	#1c15bc
 enteroendocrine cells	#F7DC6F
 mesothelial cells	#7DCEA0
-neuron	#058ca9
+neuron	#111111
 tuft cells	#9e018a
 cycling endothelial cells	#bdfd0b
 stromal 1 (ADAMDEC1)	#b22760
@@ -46,9 +47,9 @@ pit cells	#8D6E63
 ductal cells	#6300b5
 pancreatic cells	#012824
 neck cells	#a347fb
-neuroendocrine cells	#eb1388
+neuroendocrine cells	#CE35E6
 cardiovascular cells	#fe52cf
-alveolar type 2 (AT2) cells	#f1f847
+alveolar type 2 (AT2) cells	#F8E347
 chief cells	#6c6f15
 hepatocytes	#7788cd
 beta cells	#0dc290
@@ -67,8 +68,8 @@ alpha cells	#d7fdfd
 delta cells	#8be46e
 luminal cells	#e68fc6
 quiescent cells	#6ea3fa
-fibroblast	#1c3854
-mature enterocytes	#c21df3
+fibroblast	#3E35B7
+mature enterocytes	#225805
 mature colonocytes	#537f88
 myofibroblasts	#f2d71e
 enterocyte precursors	#12401F
@@ -92,12 +93,12 @@ SMC 1 (PLPP2)	#C9A580
 PRG4 pericytes	#6E9979
 contractile pericytes	#64652F
 I cells	#946262
-Enterocyte	#ED496F
+Enterocyte	#225805
 Enteroendocrine	#F7DC6F
 Enterocyte_precursor	#1f77b4
 Goblet	#8e3101
 M_cell	#f82745
-Stem_cell	#225805
+Stem_cell	#777777
 Tuft	#9e018a
 colon	#465982
 duodenal	#90D8AF
@@ -112,38 +113,139 @@ PSC	#4DBBD5
 tPSC	#00A087
 spleen	#7AA6DC
 thymus	#EFC000
-Vascular endothelial cells	#3E35B7
-Stromal cells	#A2C8EB
-Intestinal epithelial cells	#CC7DA5
-Myeloid cells	#AE4DDD
-Lymphoid cells	#8A479A
-ENS neurons	#388CAF
-ENS glia	#C93476
-Smooth muscle cells	#2B7BC5
-Chromaffin cells	#A466A4
-Lymphatic endothelial cells	#4E564B
-Mesothelial cells	#9A384B
-Erythroblasts	#B0803A
-Hepatoblasts	#A8575E
-Stellate cells	#6C8F44
-Hematopoietic stem cells	#73CFC0
-Megakaryocytes	#89DB96
-Bronchiolar and alveolar epithelial cells	#C02DDC
-Ciliated epithelial cells	#405A93
-Neuroendocrine cells	#8F4646
-Squamous epithelial cells	#486EF5
-Visceral neurons	#A2E2AE
-CSH1_CSH2 positive cells	#61E190
-Acinar cells	#BAA8E4
-Ductal cells	#FF7300
-Islet endocrine cells	#FD4C7A
-CCL19_CCL21 positive cells	#B423DF
-STC2_TLX1 positive cells	#52B720
-AFP_ALB positive cells	#8F6DAD
-Goblet cells	#9D9B9B
-Parietal and chief cells	#FFA900
-MUC13_DMBT1 positive cells	#886573
-PDE1C_ACSM3 positive cells	#C05E3F
-Thymocytes	#3C5939
-Antigen presenting cells	#844F4A
-Thymic epithelial cells	#867164
+Small_Intestine	#91D1C2
+Intestine	#91D1C2
+Large_Intestine	#37ab6c
+Liver	#8F7700
+Lung	#F39B7F
+Pancreas	#DC0000
+Prostate	#4A6990
+Salivary_Gland	#3B3B3B
+Thymus	#7E6148
+Trachea	#F39B7F
+Esophagus	#43A047
+esophagus	#43A047
+Stomach	#B09C85
+endothelial cell of hepatic sinusoid	#15889C
+hepatocyte	#7788cd
+intrahepatic cholangiocyte	#A2C8EB
+acinar cell of salivary gland	#CC7DA5
+pericyte cell	#AE4DDD
+endothelial cell of lymphatic vessel	#83D397
+adventitial cell	#388CAF
+endothelial cell	#C93476
+duct epithelial cell	#2B7BC5
+basal cell	#E68A54
+myoepithelial cell	#A466A4
+pancreatic acinar cell	#3caa0a
+pancreatic stellate cell	#9A384B
+pancreatic ductal cell	#5469C9
+pancreatic beta cell	#0dc290
+basal cell of prostate epithelium	#6C8F44
+epithelial cell	#73CFC0
+hillock-club cell of prostate epithelium	#89DB96
+luminal cell of prostate epithelium	#C02DDC
+smooth muscle cell	#C732E5
+stromal cell	#AA2E96
+salivary gland cell	#486EF5
+ionocyte	#A2E2AE
+enterocyte of epithelium of large intestine	#61E190
+large intestine goblet cell	#BAA8E4
+paneth cell of epithelium of large intestine	#FF7300
+transit amplifying cell of large intestine	#FD4C7A
+gut endothelial cell	#B423DF
+intestinal crypt stem cell of large intestine	#777777
+intestinal enteroendocrine cell	#8F6DAD
+intestinal tuft cell	#9D9B9B
+type ii pneumocyte	#FFA900
+bronchial vessel endothelial cell	#886573
+respiratory mucous cell	#C05E3F
+club cell of prostate epithelium	#3C5939
+hillock cell of prostate epithelium	#844F4A
+enterocyte of epithelium of small intestine	#225805
+transit amplifying cell of small intestine	#F3D26D
+small intestine goblet cell	#6C9952
+paneth cell of epithelium of small intestine	#196493
+intestinal crypt stem cell of small intestine	#614C61
+immature enterocyte	#CF5A3E
+intestinal crypt stem cell	#600ABB
+mature enterocyte	#c21df3
+goblet cell	#8e3101
+endothelial cell of artery	#D2F677
+lung ciliated cell	#994841
+respiratory goblet cell	#846437
+serous cell of epithelium of bronchus	#686EB1
+capillary endothelial cell	#0C8CA9
+capillary aerocyte	#40A509
+type i pneumocyte	#284415
+vein endothelial cell	#5A6ECE
+alveolar fibroblast	#66153A
+bronchial smooth muscle cell	#FA6767
+club cell	#795548
+lung microvascular endothelial cell	#509343
+vascular associated smooth muscle cell	#8C78A7
+myofibroblast cell	#C76BDA
+mesothelial cell	#7DCEA0
+pulmonary ionocyte	#34A673
+pancreatic pp cell	#BAEB13
+pancreatic alpha cell	#d7fdfd
+pancreatic delta cell	#8be46e
+duodenum glandular cell	#5AB8AF
+endothelial cell of vascular tree	#BB55E0
+intestinal epithelial cell	#6BC83A
+myeloid cell	#B46268
+innate lymphoid cell	#59D885
+glial cell	#28CE60
+chromaffin cell	#6CC3AF
+erythroblast	#73CD31
+hepatoblast	#BD54A1
+hepatic stellate cell	#0FC08E
+hematopoietic stem cell	#6E8E7F
+megakaryocyte	#8A43E9
+epithelial cell of lower respiratory tract	#4C6E9A
+ciliated epithelial cell	#62DA91
+neuroendocrine cell	#CE35E6
+squamous epithelial cell	#D0C03C
+visceromotor neuron	#D27258
+native cell	#70D37E
+acinar cell	#3caa0a
+endocrine cell	#67DCD5
+enteric neuron	#B041E3
+brush cell	#5B20C8
+Mesenchyme subtype 2	#e4b974
+Mesenchyme subtype 3	#d6a5fa
+Mesenchyme subtype 1	#b22760
+Mesenchyme subtype 4	#47edd1
+Intestinal epithelium	#ED496F
+Proliferative mesenchyme	#a3e3af
+Mesenchyme subtype 5	#854f49
+Macrophage/monocyte 2	#B09C85
+T cell/NK cell 2	#eb1388
+Endothelial	#CD534C
+Basal like	#E68A54
+Distal lung epithelium	#85C1E9
+Erythroblast	#73CD31
+PNS neuron	#868686
+PNS glia	#AFB9D1
+Pericyte	#573794
+Chondrocyte	#08f8eb
+Gastrointestinal epithelium	#0073C2
+Ciliated	#1c15bc
+B cell	#c251a1
+Macrophage/monocyte 1	#7E6148
+MUC2+ goblet	#8e3101
+T cell/NK cell 1	#fe52cf
+Enteroendocrine	#F7DC6F
+Undefined	gray
+Hepatocyte	#7788cd
+Mesothelial cell	#7DCEA0
+adult	#1f77b4
+d47	#ff7f0e
+d59	#2ca02c
+d72	#d62728
+d80	#9467bd
+d85	#c49c94
+d101	#f7b6d2
+d122	#c7c7c7
+d127	#dbdb8d
+d132	#9edae5
