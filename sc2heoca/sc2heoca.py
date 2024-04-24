@@ -183,6 +183,7 @@ class Query:
 
         # predict detail_tissue
         if "detail_tissue" in self.adata_latent_source.obs.columns:
+            self.adata_latent_source.obs.detail_tissue = self.adata_latent_source.obs.detail_tissue.astype('str')
             knn = KNeighborsClassifier(n_neighbors=100)
             knn.fit(self.adata_latent_source.to_df(), 
                 self.adata_latent_source.obs.detail_tissue)
