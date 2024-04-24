@@ -182,13 +182,15 @@ class Query:
         mydist = pd.DataFrame(knn_res[0]).mean(1)
 
         # predict detail_tissue
-        knn = KNeighborsClassifier(n_neighbors=100)
-        knn.fit(self.adata_latent_source.to_df(), 
-            self.adata_latent_source.obs.detail_tissue)
-        adata_latent.obs['predict_detail_tissue'] = knn.predict(adata_latent.to_df())
+        if "detail_tissue" in self.adata_latent_source.obs.columns:
+            knn = KNeighborsClassifier(n_neighbors=100)
+            knn.fit(self.adata_latent_source.to_df(), 
+                self.adata_latent_source.obs.detail_tissue)
+            adata_latent.obs['predict_detail_tissue'] = knn.predict(adata_latent.to_df())
 
         adata.obs['predict_tissue']=adata_latent.obs.predict_tissue
-        adata.obs['predict_detail_tissue'] = adata_latent.obs.predict_detail_tissue
+        if "detail_tissue" in self.adata_latent_source.obs.columns:
+            adata.obs['predict_detail_tissue'] = adata_latent.obs.predict_detail_tissue
         adata.obs['predict_level_1']=adata_latent.obs.predict_level_1
         adata.obs['predict_level_2']=adata_latent.obs.predict_level_2
         adata.obs['predict_level_3']=adata_latent.obs.predict_level_3
