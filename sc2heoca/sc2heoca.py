@@ -19,6 +19,23 @@ from scarches.models.scpoli import scPoli
 
 from . import PACKAGE_DIR
 
+import torch
+import random
+# torch.manual_seed(0)
+# random.seed(0)
+# np.random.seed(0)
+# import pytorch_lightning as pl
+# pl.seed_everything(0)
+
+def seed_everything(TORCH_SEED):
+	random.seed(TORCH_SEED)
+	os.environ['PYTHONHASHSEED'] = str(TORCH_SEED)
+	np.random.seed(TORCH_SEED)
+	torch.manual_seed(TORCH_SEED)
+	torch.cuda.manual_seed_all(TORCH_SEED)
+	torch.backends.cudnn.deterministic = True
+	torch.backends.cudnn.benchmark = False
+
 def load_colorplate():
     color_file = os.path.join(PACKAGE_DIR, "db", "gut_scpoli_color.txt")
 
@@ -82,6 +99,8 @@ def find_uni_genes(auc_de_res_exp, auc_de_res_ctrl, cutoff):
 
 class Query:
     def __init__(self, model_dir, load_ref=False):
+        seed_everything(0)
+
         self.scpoli_model = f"{model_dir}/scpoli_model/"
         self.adata_latent_source = sc.read_h5ad(f"{model_dir}/adata_latent_source.h5ad")
         self.umap_model = pickle.load(open(f"{model_dir}/umap_model.sav", 'rb'))
@@ -197,6 +216,7 @@ class Query:
         adata.obs['predict_level_3']=adata_latent.obs.predict_level_3
         adata.obsm['X_umap'] = adata_latent.obsm['X_umap']
         adata.obs['mean_dist'] = mydist.tolist()
+        adata.obsm['scpoli_latent'] = adata_latent.X
 
         return adata
     
