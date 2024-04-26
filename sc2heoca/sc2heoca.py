@@ -23,20 +23,6 @@ import torch
 import random
 
 
-import anndata2ri
-from rpy2.robjects import r
-anndata2ri.activate()
-import os
-os.environ["R_HOME"] = "/home/xuq44/scratch/miniconda3/envs/scr/lib/R" 
-import rpy2
-import rpy2.robjects as robjects
-from rpy2.robjects.packages import importr
-
-# torch.manual_seed(0)
-# random.seed(0)
-# np.random.seed(0)
-# import pytorch_lightning as pl
-# pl.seed_everything(0)
 
 def seed_everything(TORCH_SEED):
 	random.seed(TORCH_SEED)
@@ -291,27 +277,35 @@ class Query:
         return de_res_final
 
 class Similarity:
-    def __init__(self, model_file):
+    def __init__(self, r_path, model_file):
+        self.r_path = r_path
+
+        os.environ["R_HOME"] = self.r_path
+        from rpy2.robjects.packages import importr
         base = importr('base')
         miloR = importr('miloR')
+        
         self.milo_model = base.readRDS(f"{model_file}")
 
+    def run_milo(self, adata, sample_name):
 
-    def run_milo(self, milo_model, sample):
-        save_dir = "/home/xuq44/projects/hgioa/data/results/rev_results/new_data/fmi_colon"
-
-
-        adata = sc.read_h5ad(f"{save_dir}/{sample}.h5ad")
+        os.environ["R_HOME"] = self.r_path
+        import rpy2.robjects as robjects
+        import anndata2ri
+        anndata2ri.activate()
 
         adata_sce = anndata2ri.py2rpy(adata)
 
         r_source = robjects.r['source']
-        r_source('run_milo.R')
+
+        milo_file = os.path.join(PACKAGE_DIR, "r", "run_milo.R")
+        r_source(milo_file)
+
         r_getname = robjects.globalenv['run_milo']
 
-        aaa = r_getname(milo_model, adata_sce,'cell_ontology_class')
-        aaa['sample']=sample
+        res = r_getname(self.milo_model, adata_sce, 'cell_ontology_class')
+        res['sample']=sample_name
         
-        return aaa
+        return res
     
     

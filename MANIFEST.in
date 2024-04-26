@@ -1,3 +1,4 @@
 include sc2heoca/db/hg_genes_clear.txt
 include sc2heoca/db/gut_scpoli_color.txt
+include sc2heoca/r/run_milo.R
 
