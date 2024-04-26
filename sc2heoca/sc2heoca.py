@@ -21,6 +21,17 @@ from . import PACKAGE_DIR
 
 import torch
 import random
+
+
+import anndata2ri
+from rpy2.robjects import r
+anndata2ri.activate()
+import os
+os.environ["R_HOME"] = "/home/xuq44/scratch/miniconda3/envs/scr/lib/R" 
+import rpy2
+import rpy2.robjects as robjects
+from rpy2.robjects.packages import importr
+
 # torch.manual_seed(0)
 # random.seed(0)
 # np.random.seed(0)
@@ -278,4 +289,29 @@ class Query:
             de_res_final = pd.DataFrame.from_dict(uni_genes, orient='index').T
     
         return de_res_final
+
+class Similarity:
+    def __init__(self, model_file):
+        base = importr('base')
+        miloR = importr('miloR')
+        self.milo_model = base.readRDS(f"{model_file}")
+
+
+    def run_milo(self, milo_model, sample):
+        save_dir = "/home/xuq44/projects/hgioa/data/results/rev_results/new_data/fmi_colon"
+
+
+        adata = sc.read_h5ad(f"{save_dir}/{sample}.h5ad")
+
+        adata_sce = anndata2ri.py2rpy(adata)
+
+        r_source = robjects.r['source']
+        r_source('run_milo.R')
+        r_getname = robjects.globalenv['run_milo']
+
+        aaa = r_getname(milo_model, adata_sce,'cell_ontology_class')
+        aaa['sample']=sample
+        
+        return aaa
+    
     
