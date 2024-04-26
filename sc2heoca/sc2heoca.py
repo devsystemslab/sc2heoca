@@ -99,7 +99,6 @@ def find_uni_genes(auc_de_res_exp, auc_de_res_ctrl, cutoff):
 
 class Query:
     def __init__(self, model_dir, load_ref=False):
-        seed_everything(0)
 
         self.scpoli_model = f"{model_dir}/scpoli_model/"
         self.adata_latent_source = sc.read_h5ad(f"{model_dir}/adata_latent_source.h5ad")
@@ -111,6 +110,7 @@ class Query:
             self.adata = sc.read_h5ad(f"{model_dir}/gut_scpoli_integration.h5ad")
     
     def run_scpoli(self, adata_query, sample_name):
+        seed_everything(0)
 
         if sample_name is not None:
             adata_query.obs['sample_id'] = sample_name
