@@ -62,7 +62,7 @@ adata_query = query.run_scpoli(adata_query=adata_query,
 * Plot query result UMAP
 ```
 adata4plot = query.merge4plot(adata_query)
-sc.pl.umap(adata4plot, color=['predict_level_2'], palette=query.colorplate,
+sc.pl.umap(adata4plot, color=['predict_level_2'], palette=query.load_colorpalette,
            frameon=False, size=5)
 ```
 

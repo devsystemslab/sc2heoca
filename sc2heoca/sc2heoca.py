@@ -36,7 +36,7 @@ def seed_everything(TORCH_SEED):
 	torch.backends.cudnn.deterministic = True
 	torch.backends.cudnn.benchmark = False
 
-def load_colorplate():
+def load_colorpalette():
     color_file = os.path.join(PACKAGE_DIR, "db", "gut_scpoli_color.txt")
 
     plate_level_all = pd.read_csv(color_file, sep='\t', header=None, index_col=0)
@@ -105,7 +105,7 @@ class Query:
         self.adata_latent_source = sc.read_h5ad(f"{model_dir}/adata_latent_source.h5ad")
         self.umap_model = pickle.load(open(f"{model_dir}/umap_model.sav", 'rb'))
         self.empty_adata = sc.read_h5ad(f"{model_dir}/empty.h5ad")
-        self.colorplate = load_colorplate()
+        self.load_colorpalette = load_colorpalette()
 
         if load_ref:
             self.adata = sc.read_h5ad(f"{model_dir}/gut_scpoli_integration.h5ad")
