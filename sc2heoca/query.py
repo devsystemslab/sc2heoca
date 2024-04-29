@@ -215,6 +215,11 @@ class Query:
         adata.obs['mean_dist'] = mydist.tolist()
         adata.obsm['scpoli_latent'] = adata_latent.X
 
+        ## all str columns become object type TODO
+        for i in adata.obs.columns:
+            if adata.obs[i].dtype == 'object':
+                adata.obs[i] = adata.obs[i].astype('category')
+                
         return adata
     
     def merge4plot(self, adata_query):
