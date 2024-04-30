@@ -137,7 +137,7 @@ class Target:
         
         return conf_res
 
-    def get_confidence(self, adata_query, sample_name, on_tissue=None):
+    def get_target(self, adata_query, sample_name, on_tissue=None):
         map_res = self.__run_scpoli(adata_query, sample_name)
         conf_res = self.__get_confidence(map_res, on_tissue)
 
