@@ -183,5 +183,5 @@ class Target:
         map_res = self.__run_scpoli(adata_query, sample_name, on_tissue)
         conf_res = self.__get_confidence(map_res, on_tissue)
 
-        return map_res, conf_res
+        return conf_res
     
