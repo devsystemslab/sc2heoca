@@ -21,23 +21,50 @@ def load_colorpalette():
     return plate_level_all
 
 class Target:
-    def __init__(self, model_dir):
-
+    def __init__(self, model, model_dir):
+        
+        self.model = model
         self.scpoli_model = f"{model_dir}/scpoli_model/"
         self.adata_latent_source = sc.read_h5ad(f"{model_dir}/adata_latent_source.h5ad")
         self.umap_model = pickle.load(open(f"{model_dir}/umap_model.sav", 'rb'))
         self.empty_adata = sc.read_h5ad(f"{model_dir}/empty.h5ad")
         self.colorpalette = load_colorpalette()
 
-        self.adata_latent_source.obs.organ_tissue = self.adata_latent_source.obs.organ_tissue.astype('str')
-        self.adata_latent_source.obs.loc[self.adata_latent_source.obs.organ_tissue.isin(['Small_Intestine','Large_Intestine']), 'organ_tissue'] = 'Intestine'
+        if self.model == 'adult':
+            self.adata_latent_source.obs.organ_tissue = self.adata_latent_source.obs.organ_tissue.astype('str')
+            self.adata_latent_source.obs.loc[self.adata_latent_source.obs.organ_tissue.isin(['Small_Intestine','Large_Intestine']), 'organ_tissue'] = 'Intestine'
 
-    def __run_scpoli(self, adata_query, sample_name):
+    def __correct_tissue(self, map_res, on_tissue, cutoff=0.3):
+        ref_cellnum = self.adata_latent_source.obs.groupby(['celltype','tissue']).count().reset_index().set_index('tissue').pivot(columns='celltype', values='n_genes').T
+        ref_cellpect = ref_cellnum.apply(lambda x: x/ref_cellnum.sum(1))
+
+        correct_celltypes = {}
+        for tissue in ref_cellpect:
+            correct_celltypes[tissue] = ref_cellpect[tissue][ref_cellpect[tissue]>cutoff].index.tolist()
+
+        if on_tissue in correct_celltypes:
+            for celltype in correct_celltypes[on_tissue]:
+                # map_res.loc[map_res.predict_celltype==celltype, 
+                #             f'prob_{on_tissue}'] = map_res.loc[map_res.predict_celltype==celltype, 
+                #                                             f'predict_celltype_prob']
+                map_res.loc[map_res.predict_celltype==celltype, 
+                            f'prob_{on_tissue}'] = map_res.loc[map_res.predict_celltype==celltype, 
+                                         [f'predict_celltype_prob', f'prob_{on_tissue}']].max(1)
+                
+        map_res['predict_tissue'] = [i[5:] for i in map_res[[i for i in map_res.columns if i.startswith('prob_')]].idxmax(1)]
+
+        return map_res
+
+    def __run_scpoli(self, adata_query, sample_name, on_tissue=None):
         adata_query = adata_query.raw.to_adata()
         adata_query = anndata.AnnData.concatenate(*[adata_query, self.empty_adata], join='outer', fill_value=0)
         adata_query = adata_query[:,[i for i in self.empty_adata.var.index if i in adata_query.var.index]]
         adata_query.obs['celltype'] = 'na'
-        adata_query.obs['Batch'] = sample_name
+
+        if self.model == 'adult':
+            adata_query.obs['Batch'] = sample_name
+        elif self.model == 'fetal':
+            adata_query.obs['Sample'] = sample_name
 
         scpoli_query = scPoli.load_query_data(
             adata=adata_query,
@@ -62,14 +89,25 @@ class Target:
             eta=10,
             alpha_epoch_anneal=100
         )
-        results_dict = scpoli_query.classify(adata_query.X, adata_query.obs["Batch"].values)
+
+        if self.model == 'adult':
+            results_dict = scpoli_query.classify(adata_query.X, adata_query.obs["Batch"].values)
+        elif self.model == 'fetal':
+            results_dict = scpoli_query.classify(adata_query.X, adata_query.obs["Sample"].values)
 
         #get latent representation of query data
-        data_latent= scpoli_query.get_latent(
-            adata_query.X, 
-            adata_query.obs["Batch"].values,
-            mean=True
-        )
+        if self.model == 'adult':
+            data_latent= scpoli_query.get_latent(
+                adata_query.X, 
+                adata_query.obs["Batch"].values,
+                mean=True
+            )
+        elif self.model == 'fetal':
+            data_latent= scpoli_query.get_latent(
+                adata_query.X, 
+                adata_query.obs["Sample"].values,
+                mean=True
+            )
         adata_latent = sc.AnnData(data_latent)
         adata_latent.obs = adata_query.obs.copy()
 
@@ -108,7 +146,11 @@ class Target:
         adata_latent.obs['predict_tissue'] = knn.predict(adata_latent.to_df())
         adata_latent.obs = pd.merge(adata_latent.obs, knn_res, left_index=True, right_index=True)
 
-        return adata_latent.obs
+        if on_tissue != None:
+            map_res = self.__correct_tissue(adata_latent.obs, on_tissue)
+        else:
+            map_res = adata_latent.obs
+        return map_res
     
     def __get_confidence(self, map_res, on_tissue=None):
         tissue_order = ["intestine", "lung", "liver",  "pancreas", "prostate", 
@@ -138,8 +180,8 @@ class Target:
         return conf_res
 
     def get_target(self, adata_query, sample_name, on_tissue=None):
-        map_res = self.__run_scpoli(adata_query, sample_name)
+        map_res = self.__run_scpoli(adata_query, sample_name, on_tissue)
         conf_res = self.__get_confidence(map_res, on_tissue)
 
-        return conf_res
+        return map_res, conf_res
     
