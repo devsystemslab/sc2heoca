@@ -34,23 +34,29 @@ class Target:
             self.adata_latent_source.obs.organ_tissue = self.adata_latent_source.obs.organ_tissue.astype('str')
             self.adata_latent_source.obs.loc[self.adata_latent_source.obs.organ_tissue.isin(['Small_Intestine','Large_Intestine']), 'organ_tissue'] = 'Intestine'
 
-    def __correct_tissue(self, map_res, on_tissue, cutoff=0.3):
-        ref_cellnum = self.adata_latent_source.obs.groupby(['celltype','tissue']).count().reset_index().set_index('tissue').pivot(columns='celltype', values='n_genes').T
-        ref_cellpect = ref_cellnum.apply(lambda x: x/ref_cellnum.sum(1))
-
+    def __correct_tissue(self, map_res, on_tissue, cutoff=0.01):
+        ref_cellnum = self.adata_latent_source.obs.groupby(['celltype','tissue']).\
+                        count().reset_index().set_index('tissue').\
+                        pivot(columns='celltype', values='n_genes').T
         correct_celltypes = {}
+        ref_cellpect = ref_cellnum.apply(lambda x: x/ref_cellnum.sum(1))
         for tissue in ref_cellpect:
-            correct_celltypes[tissue] = ref_cellpect[tissue][ref_cellpect[tissue]>cutoff].index.tolist()
+            correct_celltypes[tissue]=[]
+            for i in ref_cellpect.index:
+                if ref_cellpect.loc[i][ref_cellpect.loc[i]>0.2].shape[0]>1:
+                    correct_celltypes[tissue].append(i)
 
+        ref_cellpect = ref_cellnum.T.apply(lambda x: x/ref_cellnum.T.sum(1)).T
+        ref_cellpect = ref_cellpect.apply(lambda x: x/ref_cellpect.sum(1))
         if on_tissue in correct_celltypes:
             for celltype in correct_celltypes[on_tissue]:
-                # map_res.loc[map_res.predict_celltype==celltype, 
-                #             f'prob_{on_tissue}'] = map_res.loc[map_res.predict_celltype==celltype, 
-                #                                             f'predict_celltype_prob']
-                map_res.loc[map_res.predict_celltype==celltype, 
-                            f'prob_{on_tissue}'] = map_res.loc[map_res.predict_celltype==celltype, 
-                                         [f'predict_celltype_prob', f'prob_{on_tissue}']].max(1)
-                
+                for tt in ref_cellpect:
+                    if ref_cellpect.loc[celltype, tt] > cutoff:
+                        map_res.loc[map_res.predict_celltype==celltype, f'prob_{tt}'] = \
+                        map_res.loc[map_res.predict_celltype==celltype, f'prob_{tt}']/ref_cellpect.loc[celltype, tt]
+
+        ttt = map_res[[i for i in map_res.columns if i.startswith('prob_')]]
+        map_res[[i for i in map_res.columns if i.startswith('prob_')]] = ttt.div(ttt.sum(axis=1), axis=0)
         map_res['predict_tissue'] = [i[5:] for i in map_res[[i for i in map_res.columns if i.startswith('prob_')]].idxmax(1)]
 
         return map_res
