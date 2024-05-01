@@ -25,7 +25,6 @@ nav:
   - Installation: 'installation.md'
   - Input data: 'input_data.md'
   - Command-line reference: 'command-line_reference.md'
-  - API documentation: 'API_documentation.md'
   - Examples: 'examples.md'
   - FAQ: 'faq.md'
   - Acknowledgments: 'acknowledgments.md'
