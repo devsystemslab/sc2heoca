@@ -1,0 +1,31 @@
+site_name: sc2heoca
+site_description: A method for querying newly generated organoid single-cell RNA sequencing (scRNA-seq) data to the Human Endoderm Organoid Cell Atlas.
+site_author: Quan Xu, Lennard Halle, Soroor Hediyeh-zadeh, Merel Kuijs, Umut Kilik, Qianhui Yu, Tristan Frum, Lukas Adam, Shrey Parikh, Manuel Gander, Raphael Kfuri-Rubens, Dominik Klein, Zhisong He, Jonas Simon Fleck, Koen Oost, Maurice Kahnwald, Silvia Barbiero, Olga Mitrofanova, Grzegorz Maciag, Kim B. Jensen, Matthias Lutolf, Prisca Liberali, Joep Beumer, Jason R. Spence, Barbara Treutlein, Fabian J. Theis, J. Gray Camp
+copyright: Copyright &copy; 2024 <a href="https://github.com/devsystemslab">devsystemslab</a>.
+
+repo_url: https://github.com/devsystemslab/sc2heoca/
+
+theme: readthedocs
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - footnotes
+
+#extra_css:
+#  - css/extra.css
+
+extra_javascript:
+    - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
+
+nav:
+  - Home: 'index.md'
+  - Model Description: 'model_description.md'
+  - Installation: 'installation.md'
+  - Input data: 'input_data.md'
+  - Command-line reference: 'command-line_reference.md'
+  - API documentation: 'API_documentation.md'
+  - Examples: 'examples.md'
+  - FAQ: 'faq.md'
+  - Acknowledgments: 'acknowledgments.md'
