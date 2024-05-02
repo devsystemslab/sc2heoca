@@ -8,20 +8,8 @@ import anndata
 import scanpy as sc
 
 from . import PACKAGE_DIR
+from sc2heoca.utils import seed_everything, load_colorpalette
 
-import torch
-import random
-
-
-
-def seed_everything(TORCH_SEED):
-    random.seed(TORCH_SEED)
-    os.environ['PYTHONHASHSEED'] = str(TORCH_SEED)
-    np.random.seed(TORCH_SEED)
-    torch.manual_seed(TORCH_SEED)
-    torch.cuda.manual_seed_all(TORCH_SEED)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
 
 class Maturation:
     def __init__(self, r_path, model_file):

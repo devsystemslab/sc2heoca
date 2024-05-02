@@ -10,15 +10,8 @@ import anndata
 import scanpy as sc
 from scarches.models.scpoli import scPoli
 
+from sc2heoca.utils import seed_everything, load_colorpalette
 from . import PACKAGE_DIR
-
-def load_colorpalette():
-    color_file = os.path.join(PACKAGE_DIR, "db", "gut_scpoli_color.txt")
-
-    plate_level_all = pd.read_csv(color_file, sep='\t', header=None, index_col=0)
-    plate_level_all = plate_level_all.to_dict()[1]
-
-    return plate_level_all
 
 class Target:
     def __init__(self, model, model_dir):
@@ -62,6 +55,8 @@ class Target:
         return map_res
 
     def __run_scpoli(self, adata_query, sample_name, on_tissue=None):
+        seed_everything(0)
+
         adata_query = adata_query.raw.to_adata()
         adata_query = anndata.AnnData.concatenate(*[adata_query, self.empty_adata], join='outer', fill_value=0)
         adata_query = adata_query[:,[i for i in self.empty_adata.var.index if i in adata_query.var.index]]
