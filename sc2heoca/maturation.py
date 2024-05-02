@@ -12,7 +12,7 @@ from sc2heoca.utils import seed_everything, load_colorpalette
 
 
 class Maturation:
-    def __init__(self, r_path, model_file):
+    def __init__(self, r_path, model, model_file):
         self.r_path = r_path
 
         os.environ["R_HOME"] = self.r_path
@@ -20,6 +20,7 @@ class Maturation:
         base = importr('base')
         miloR = importr('miloR')
         
+        self.model = model
         self.milo_model = base.readRDS(f"{model_file}")
 
     def run_milo(self, adata, sample_name):
@@ -38,7 +39,12 @@ class Maturation:
 
         r_getname = robjects.globalenv['run_milo']
 
-        res = r_getname(self.milo_model, adata_sce, 'cell_ontology_class')
+        if self.model == 'adult':
+            group_by = 'cell_ontology_class'
+        elif self.model == 'fetal':
+            group_by = 'celltype'
+
+        res = r_getname(self.milo_model, adata_sce, group_by)
         res['sample']=sample_name
         
         return res
