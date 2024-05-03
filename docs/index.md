@@ -20,13 +20,17 @@ A method for querying newly generated organoid single-cell RNA sequencing (scRNA
 
 ### Full contents
 
-* [Model description](model_description.md)
-    - [Overview of sc2heoca](model_description/#overview_of_sc2heoca)
-    - [Prediction of transcription factor binding](model_description/#prediction_of_transcription_factor_binding)
-* [Input data](input_data.md)
-* [Examples](examples.md)
+* [Model description and download](model_description.md)
+    - [Overview of sc2heoca model](model_description/#overview_of_sc2heoca)
+    - [Prepare reference atlas and model](model_description/#Prepare_reference_atlas_and_model)
+* [installation instructions](installation.md)
+    - [Creat conda environment](installation/#Creat_conda_environment)
+    - [Install sc2heoca from GitHub](installation/#Install_sc2heoca_from_GitHub)
+* [Input data and examples](examples.md)
     - [sc2heoca setup](examples/#prepare-code-and-dataset)
+    - [Data](examples/#data)
     - [Example of sc2heoca query and annotation](examples/#query)
     - [Example of sc2heoca on/off target influence](examples/#target)
     - [Example of sc2heoca maturation influence](examples/#maturation)
+    - [Example of sc2heoca de genes influence](examples/#de_genes)
 * [Acknowledgments](acknowledgments.md)

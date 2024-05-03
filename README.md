@@ -2,11 +2,10 @@
 A method for querying newly generated organoid single-cell RNA sequencing (scRNA-seq) data to the Human Endoderm Organoid Cell Atlas ([HEOCA](https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg)). HEOCA is an integrated single-cell transcriptome collection that includes 218 samples from organoids derived from various endoderm tissues, including the lung, pancreas, intestine, liver, biliary system, stomach, and prostate. This current version of HEOCA includes nearly one million cells from a variety of conditions, data sources, and protocols.
 
 Check out the **[sc2heoca documentation](https://sc2heoca.readthedocs.io/en/)** for 
-* [installation instructions](https://sc2heoca.readthedocs.io/en/installation/)
-* [command explanations](https://sc2heoca.readthedocs.io/en/command-line_reference/)
-* [input explanations and examples](https://sc2heoca.readthedocs.io/en/input_data/)
-* [usage examples](https://sc2heoca.readthedocs.io/en/examples/)
-* [FAQ](https://sc2heoca.readthedocs.io/en/faq/)
+* [model description and download](https://sc2heoca.readthedocs.io/en/latest/model_description/)
+* [installation instructions](https://sc2heoca.readthedocs.io/en/latest/installation/)
+* [input explanations and examples](https://sc2heoca.readthedocs.io/en/latest/examples/)
+* [FAQ](https://sc2heoca.readthedocs.io/en/latest/faq/)
 * and more!
 
 ## Citation
