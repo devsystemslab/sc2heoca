@@ -49,4 +49,14 @@ class Maturation:
         
         return res
     
-    
+    def load_map(self, milo_res, ref):
+        if ref=='ts':
+            adata_milo = sc.read_h5ad(os.path.join(PACKAGE_DIR, "db", "ts_milo.h5ad"))
+        elif ref == 'yu':
+            adata_milo = sc.read_h5ad(os.path.join(PACKAGE_DIR, "db", "yu_milo.h5ad"))
+
+        adata_milo.obs = pd.merge(adata_milo.obs, milo_res[['group', 'max_sim']], left_index=True, right_index=True)
+
+        return adata_milo
+
+
