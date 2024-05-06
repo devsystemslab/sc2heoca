@@ -33,4 +33,5 @@ A method for querying newly generated organoid single-cell RNA sequencing (scRNA
     - [Example of sc2heoca on/off target influence](examples/#target)
     - [Example of sc2heoca maturation influence](examples/#maturation)
     - [Example of sc2heoca de genes influence](examples/#de_genes)
+* [FAQ](faq.md)
 * [Acknowledgments](acknowledgments.md)
