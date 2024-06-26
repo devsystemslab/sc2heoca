@@ -1,6 +1,6 @@
 ## sc2heoca
 
-### Waht is sc2heoca?
+### What is sc2heoca?
 A method for querying newly generated organoid single-cell RNA sequencing (scRNA-seq) data to the Human Endoderm Organoid Cell Atlas ([HEOCA](https://cellxgene.cziscience.com/e/6725ee8e-ef5b-4e68-8901-61bd14a1fe73.cxg)). HEOCA is an integrated single-cell transcriptome collection that includes 218 samples from organoids derived from various endoderm tissues, including the lung, pancreas, intestine, liver, biliary system, stomach, and prostate. This current version of HEOCA includes nearly one million cells from a variety of conditions, data sources, and protocols.
 
 !!! note "Citation"
