@@ -79,6 +79,6 @@ sc.pl.umap(adata4plot, color=['predict_level_2'],
 ### Find DE genes to HECOA
 
 ```
-de_res = query.find_de_genes(adata_query, tissue='lung')
+de_res = query.find_de_genes(adata_query)
 
 ```
