@@ -1,6 +1,6 @@
 # Examples
 
-## Prerequisites
+### Prerequisites
 
 1. Please install sc2heoca if you haven't done so already, using the [installation documentation](installation.md).
 
@@ -24,7 +24,7 @@ rm sc2heoca_example_data.tgz
 ```
 
 
-##  Data
+###  Data
 
 To run a full sc2heoca analysis you will need:
 
