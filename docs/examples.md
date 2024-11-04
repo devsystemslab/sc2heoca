@@ -55,12 +55,11 @@ Details for the different steps are described below.
 adata_query = sc.read_10x_mtx(path='Chan_NatCommun_2022', 
                               prefix='GSM5628936_SCNPO2-')
 sc.pp.filter_cells(adata_query, min_genes=1000)
+sc.pp.filter_cells(adata_query, max_genes=8000)
 ```
 ### Query new sample
 ```
 from sc2heoca.query import Query
-from sc2heoca.target import Target
-from sc2heoca.maturation import Maturation
 
 model_dir = "heoca_atlas"
 query = Query(model_dir=model_dir, load_ref=True)

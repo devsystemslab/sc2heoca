@@ -90,10 +90,10 @@ class Query:
         if load_ref:
             self.adata = sc.read_h5ad(f"{model_dir}/gut_scpoli_integration.h5ad")
 
-    def run_scpoli(self, adata_query):
+    def run_scpoli(self, adata_query, sample_name=None):
         seed_everything(0)
         
-        adata_query = init_sample(adata_query, self.empty_adata)
+        adata_query = init_sample(adata_query, self.empty_adata, sample_name)
 
         scpoli_query = scPoli.load_query_data(
             adata=adata_query,
