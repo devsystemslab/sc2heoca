@@ -11,7 +11,6 @@ from scipy.io import mmread
 from scipy import sparse
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestNeighbors
-from wilcoxauc import wilcoxauc,top_markers
 
 import anndata
 import scanpy as sc
@@ -19,6 +18,7 @@ from scarches.models.scpoli import scPoli
 
 from . import PACKAGE_DIR
 from sc2heoca.utils import seed_everything, load_colorpalette
+from sc2heoca.de import get_matched_transcriptome, test_de_paired
 
 def clear_genes(adata):
     gene_file = os.path.join(PACKAGE_DIR, "db", "hg_genes_clear.txt")
@@ -29,7 +29,7 @@ def clear_genes(adata):
     
     return adata
 
-def init_sample(adata, empty_adata):
+def init_sample(adata, empty_adata, sample_name=None):
     
     malat1 = adata.var_names.str.startswith('MALAT1')
     mito_genes = adata.var_names.str.startswith('MT-')
@@ -58,6 +58,11 @@ def init_sample(adata, empty_adata):
     adata.obs['level_2']='na'
     adata.obs['level_3']='na'
 
+    if sample_name is not None:
+        adata.obs['sample_id'] = sample_name
+    else:
+        adata.obs['sample_id']='sample2query'
+
     return adata
 
 def find_uni_genes(auc_de_res_exp, auc_de_res_ctrl, cutoff):
@@ -84,19 +89,14 @@ class Query:
 
         if load_ref:
             self.adata = sc.read_h5ad(f"{model_dir}/gut_scpoli_integration.h5ad")
-    
-    def run_scpoli(self, adata_query, sample_name):
+
+    def run_scpoli(self, adata_query):
         seed_everything(0)
-
-        if sample_name is not None:
-            adata_query.obs['sample_id'] = sample_name
-        else:
-            adata_query.obs['sample_id']='sample2query'
-
-        adata = init_sample(adata_query, self.empty_adata)
+        
+        adata_query = init_sample(adata_query, self.empty_adata)
 
         scpoli_query = scPoli.load_query_data(
-            adata=adata,
+            adata=adata_query,
             reference_model=self.scpoli_model,
             labeled_indices=[],
         )
@@ -121,86 +121,99 @@ class Query:
 
         #get latent representation of query data
         data_latent= scpoli_query.get_latent(
-            adata.X, 
-            adata.obs["sample_id"].values,
+            adata_query, 
             mean=True
         )
 
         adata_latent = sc.AnnData(data_latent)
-        adata_latent.obs = adata.obs.copy()
+        adata_latent.obs = adata_query.obs.copy()
 
         #get prototypes
         labeled_prototypes = scpoli_query.get_prototypes_info()
         labeled_prototypes.obs['study'] = 'labeled prototype'
         unlabeled_prototypes = scpoli_query.get_prototypes_info(prototype_set='unlabeled')
         unlabeled_prototypes.obs['study'] = 'unlabeled prototype'
+        
+        adata_query.obsm['scpoli_latent']=adata_latent.to_df().to_numpy()
+        
+        return adata_query
 
-        que_embedding = self.umap_model.transform(adata_latent.X)
-        adata_latent.obsm['X_umap'] = que_embedding
+    def scpoli_label_transfer(self, adata_query):
+
+        que_embedding = self.umap_model.transform(adata_query.obsm['scpoli_latent'])
+        adata_query.obsm['X_umap'] = que_embedding
         # adata_all = adata_ref.concatenate(adata_que, batch_key='query')
 
-        # predict tissue
-        knn = KNeighborsClassifier(n_neighbors=100)
-        knn.fit(self.adata_latent_source.to_df(), 
-            self.adata_latent_source.obs.tissue)
-        adata_latent.obs['predict_tissue'] = knn.predict(adata_latent.to_df())
+        # # predict tissue
+        # knn = KNeighborsClassifier(n_neighbors=10)
+        # knn.fit(self.adata_latent_source.to_df(), 
+        #         self.adata_latent_source.obs.tissue)
+        # adata_query.obs['predict_tissue'] = knn.predict(adata_query.obsm['scpoli_latent'])
 
-        knn_res = pd.DataFrame(knn.predict_proba(adata_latent.to_df()))
-        knn_res.columns=['prob_'+i for i in knn.classes_]
-        knn_res.index=adata_latent.to_df().index
+        # knn_res = pd.DataFrame(knn.predict_proba(adata_query.obsm['scpoli_latent']))
+        # knn_res.columns=['prob_'+i for i in knn.classes_]
+        # knn_res.index=adata_query.obs.index
 
-        adata_latent.obs['predict_tissue'] = knn.predict(adata_latent.to_df())
-        adata_latent.obs = pd.merge(adata_latent.obs, knn_res, left_index=True, right_index=True)
+        # adata_query.obs['predict_tissue'] = knn.predict(adata_query.obsm['scpoli_latent'])
+        # adata_query.obs = pd.merge(adata_query.obs, knn_res, left_index=True, right_index=True)
 
         # predict level1
-        knn = KNeighborsClassifier(n_neighbors=100)
+        knn = KNeighborsClassifier(n_neighbors=10)
         knn.fit(self.adata_latent_source.to_df(), 
-            self.adata_latent_source.obs.level_1_late)
-        adata_latent.obs['predict_level_1'] = knn.predict(adata_latent.to_df())
+                self.adata_latent_source.obs.level_1_late)
+        adata_query.obs['predict_level_1'] = knn.predict(adata_query.obsm['scpoli_latent'])
 
         # predict level2
-        knn = KNeighborsClassifier(n_neighbors=100)
+        knn = KNeighborsClassifier(n_neighbors=10)
         knn.fit(self.adata_latent_source.to_df(), 
-            self.adata_latent_source.obs.level_2_late)
-        adata_latent.obs['predict_level_2'] = knn.predict(adata_latent.to_df())
+                self.adata_latent_source.obs.level_2_late)
+        adata_query.obs['predict_level_2'] = knn.predict(adata_query.obsm['scpoli_latent'])
+
+        # # predict leiden
+        # knn = KNeighborsClassifier(n_neighbors=10)
+        # knn.fit(self.adata_latent_source.to_df(), 
+        #         self.adata_latent_source.obs['leiden_10.0'])
+        # adata_query.obs['predict_leiden'] = knn.predict(adata_query.obsm['scpoli_latent'])
+
+        # # predict leiden
+        # knn = KNeighborsClassifier(n_neighbors=10)
+        # knn.fit(self.adata_latent_source.to_df(), 
+        #         self.adata_latent_source.obs['leiden_20.0'])
+        # adata_query.obs['predict_leiden2'] = knn.predict(adata_query.obsm['scpoli_latent'])
 
         # predict level3
-        knn = KNeighborsClassifier(n_neighbors=100)
+        knn = KNeighborsClassifier(n_neighbors=10)
         knn.fit(self.adata_latent_source.to_df(), 
-            self.adata_latent_source.obs.level_3_late)
-        adata_latent.obs['predict_level_3'] = knn.predict(adata_latent.to_df())
+                self.adata_latent_source.obs.level_3_late)
+        adata_query.obs['predict_level_3'] = knn.predict(adata_query.obsm['scpoli_latent'])
 
         # predict dist
         knn = NearestNeighbors(n_neighbors=10)
         knn.fit(self.adata_latent_source.to_df())
-        knn_res = knn.kneighbors(adata_latent.to_df())
+        knn_res = knn.kneighbors(adata_query.obsm['scpoli_latent'])
         mydist = pd.DataFrame(knn_res[0]).mean(1)
+        adata_query.obs['mean_dist'] = mydist.tolist()
+
+        # get neighbors
+        knn = NearestNeighbors(n_neighbors=10)
+        knn.fit(self.adata_latent_source.to_df())
+        adata_knn_graph = knn.kneighbors_graph(adata_query.obsm['scpoli_latent'])
 
         # predict detail_tissue
         if "detail_tissue" in self.adata_latent_source.obs.columns:
             self.adata_latent_source.obs.detail_tissue = self.adata_latent_source.obs.detail_tissue.astype('str')
-            knn = KNeighborsClassifier(n_neighbors=100)
+            knn = KNeighborsClassifier(n_neighbors=10)
             knn.fit(self.adata_latent_source.to_df(), 
                 self.adata_latent_source.obs.detail_tissue)
-            adata_latent.obs['predict_detail_tissue'] = knn.predict(adata_latent.to_df())
-
-        adata.obs['predict_tissue']=adata_latent.obs.predict_tissue
-        if "detail_tissue" in self.adata_latent_source.obs.columns:
-            adata.obs['predict_detail_tissue'] = adata_latent.obs.predict_detail_tissue
-        adata.obs['predict_level_1']=adata_latent.obs.predict_level_1
-        adata.obs['predict_level_2']=adata_latent.obs.predict_level_2
-        adata.obs['predict_level_3']=adata_latent.obs.predict_level_3
-        adata.obsm['X_umap'] = adata_latent.obsm['X_umap']
-        adata.obs['mean_dist'] = mydist.tolist()
-        adata.obsm['scpoli_latent'] = adata_latent.X
+            adata_query.obs['predict_detail_tissue'] = knn.predict(adata_query.obsm['scpoli_latent'])
 
         ## all str columns become object type TODO
-        for i in adata.obs.columns:
-            if adata.obs[i].dtype == 'object':
-                adata.obs[i] = adata.obs[i].astype('category')
-                
-        return adata
-    
+        for i in adata_query.obs.columns:
+            if adata_query.obs[i].dtype == 'object':
+                adata_query.obs[i] = adata_query.obs[i].astype('category')
+
+        return adata_query, adata_knn_graph
+
     def merge4plot(self, adata_query):
         merged_adata = anndata.AnnData.concatenate(*[adata_query, 
                                                      self.adata_latent_source], join='outer', fill_value=0)
@@ -210,52 +223,10 @@ class Query:
 
         return merged_adata
 
-    def __find_de_genes(self, tissue, adata_query, detail_tissue=None, method='wilcoxauc'):
-        if detail_tissue is None:
-            adata_subset = self.adata[(self.adata.obs.tissue==tissue)].copy()
-        else:
-            adata_subset = self.adata[(self.adata.obs.tissue==tissue)&(self.adata.obs.detail_tissue==detail_tissue)].copy()
-            
-        adata_subset.obs['sample_state'] = 'atlas'
-        adata_query.obs['sample_state'] = 'query'        
-        adata_merged = anndata.AnnData.concatenate(*[adata_subset, adata_query], join='outer', fill_value=0)
+    def find_de_genes(self, adata_query):
         
-        de_res = {}
-        for celltype in adata_subset.obs.level_2.astype('str').unique():
-            adata_query_counts = adata_query.obs.predict_level_2.value_counts()
+        adata_query, adata_knn_graph = self.scpoli_label_transfer(adata_query)
+        adata_bg = get_matched_transcriptome(adata_query, self.adata, adata_knn_graph)
+        atlas_de_res = test_de_paired(adata_query.raw.to_adata(), adata_bg, num_threads=20)
 
-            if celltype in adata_query_counts and adata_query_counts[celltype]>=5:
-
-                adata_merged_sub = adata_merged[(adata_merged.obs.level_2_late==celltype)|
-                                            (adata_merged.obs.predict_level_2==celltype)].copy()
-
-                if method == 'wilcoxauc':
-                    auc_res = wilcoxauc(adata_merged_sub, group_name='sample_state')
-                    de_res[f'query_{celltype}'] = auc_res[(auc_res.group=='query')&(auc_res.auc>0.6)&(auc_res.pvals_adj<0.01)]['names'].tolist()
-
-                else:
-                    sc.tl.rank_genes_groups(adata_merged_sub, 'sample_state', method='wilcoxon',key_added = "wilcoxon")
-                    # de_res[f'atlas_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='atlas', key='wilcoxon')['names']
-                    # de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', key='wilcoxon')['names']
-                    de_res[f'query_{celltype}'] = sc.get.rank_genes_groups_df(adata_merged_sub, group='query', 
-                                                                            key='wilcoxon', log2fc_min=1, 
-                                                                            pval_cutoff=0.01)['names'].tolist()
-
-        return de_res
-
-    def find_de_genes(self, tissue, adata_query, adata_ctrl=None, method='wilcoxauc', detail_tissue=None):
-        if adata_ctrl is None:
-            de_res = self.__find_de_genes(tissue, adata_query, method=method, detail_tissue=detail_tissue)
-            de_res_final = pd.DataFrame.from_dict(de_res, orient='index').T
-        else:
-            de_res1 = self.__find_de_genes(tissue, adata_query, method=method, detail_tissue=detail_tissue)
-            de_res2 = self.__find_de_genes(tissue, adata_ctrl, method=method, detail_tissue=detail_tissue)
-
-            uni_genes={}
-            for i in de_res1:
-                if i in de_res2:
-                    uni_genes[i] = [j for j in de_res1[i] if j not in de_res2[i]]
-                    
-            de_res_final = pd.DataFrame.from_dict(uni_genes, orient='index').T
-    
-        return de_res_final
+        return atlas_de_res

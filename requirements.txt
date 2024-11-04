@@ -1,12 +1,21 @@
-numpy==1.24.3
-numba==0.57
-scikit-learn==1.2.2
-pandas==1.5.3
-scanpy==1.9.3
-pickleshare==0.7.5
-scarches==0.5.7
-umap-learn==0.5.3
-scipy==1.9.3
+# numpy==1.26.4
+# numba==0.57
+# scikit-learn==1.2.2
+# pandas==1.5.3
+# scanpy==1.9.3
+# pickleshare==0.7.5
+# scarches==0.6.1
+# umap-learn==0.5.3
+# scipy==1.13.1
+numpy
+numba
+scipy
+scikit-learn
+pandas
+scanpy
+pickleshare
+umap-learn
+scarches==0.6.1
 wilcoxauc @ git+https://github.com/bioqxu/wilcoxauc.git
-anndata2ri
-rpy2
+# anndata2ri
+# rpy2
