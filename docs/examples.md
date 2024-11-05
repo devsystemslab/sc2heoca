@@ -81,3 +81,19 @@ sc.pl.umap(adata4plot, color=['predict_level_2'],
 de_res = query.find_de_genes(adata_query)
 
 ```
+
+### Off-target analysis
+```
+target = Target('fetal', model_dir)
+target_res = target.get_target(adata_query=adata_query, 
+                            sample_name='sample_name')
+```
+
+### Maturation analysis
+
+To run the maturation analysis, ensure that `R` is installed along with the R package [miloR](https://github.com/MarioniLab/miloR). The path to the `R` executable should also be provided.
+
+```
+path2r = '~/miniconda3/envs/sc2heoca/'
+mat_res = Maturation(path2r, 'fetal', f'{model_dir}/yu_atlas_milo.rds')
+```
