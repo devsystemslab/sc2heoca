@@ -11,8 +11,8 @@ wget https://zenodo.org/records/10977447/files/gut_scpoli_integration.h5ad
 * Download the reference model from Zenodo
 ```
 wget https://zenodo.org/records/15464516/files/heoca_scpoli_model.v2.0.zip
-tar xvzf heoca_scpoli_model.v1.0.zip -C heoca_atlas
-rm heoca_scpoli_model.v1.0.zip
+tar xvzf heoca_scpoli_model.v2.0.zip -C heoca_atlas
+rm heoca_scpoli_model.v2.0.zip
 ```
 
 * Reference atlas and available reference models from HEOCA project
