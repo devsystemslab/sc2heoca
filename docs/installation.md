@@ -31,7 +31,7 @@ $ conda activate sc2heoca
 
 ### Install `sc2heoca` from GitHub
 
-You can also install sc2heoca with `pip`. 
+You can install sc2heoca with `pip`. 
 
 ``` bash
 $ pip install git+https://github.com/devsystemslab/sc2heoca
