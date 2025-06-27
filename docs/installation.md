@@ -4,7 +4,7 @@ sc2heoca runs on Linux and Windows 10 using the [Windows Subsystem for Linux](ht
 Mac OSX should work as well, but we don't use it ourselves, so unexpected issues might pop up. 
 If you have any issues let us know, so we can try to fix it!
 
-### Creat conda environment
+### Create conda environment
 
 The recommended way to install sc2heoca is by using [conda](https://docs.continuum.io/anaconda). 
 Activate the [bioconda](https://bioconda.github.io/) channel if you haven't used bioconda before.
@@ -37,11 +37,3 @@ You can also install sc2heoca with `pip`.
 $ pip install git+https://github.com/devsystemslab/sc2heoca
 ``` 
 
-### Install R
-
-You can also install sc2heoca with `pip`. 
-
-``` bash
-mamba install conda-forge::r-base
-mamba install rpy2
-``` 
