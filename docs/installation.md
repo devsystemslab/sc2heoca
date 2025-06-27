@@ -35,5 +35,13 @@ You can install sc2heoca with `pip`.
 
 ``` bash
 $ pip install git+https://github.com/devsystemslab/sc2heoca
-``` 
+```
 
+### Install R
+
+Install R and rpy2
+
+``` bash
+mamba install conda-forge::r-base
+mamba install rpy2
+``` 
