@@ -10,28 +10,27 @@
 conda activate sc2heoca
 ```
 
-3. Download the sc2heoca models.
+3. Download the sc2heoca models (updated models can be found in the model description section).
 
 ```
 mkdir -p sc2heoca
 ```
 
-5. Download and unpack the example data:
+4. Download and unpack the example data (e.g. example counts of lung COPD data, GSE186017):
 
 ```
 tar xvzf sc2heoca_example_data.tgz
 rm sc2heoca_example_data.tgz
 ```
 
-
 ###  Data
 
 To run a full sc2heoca analysis you will need:
 
-* reference model files.
-* single-cell RNA-seq expression row counts.
+* reference model files (updated models can be found in the model description section)
+* single-cell RNA-seq expression row counts (e.g. example counts of lung COPD data, GSE186017)
 
-These files are present in the example data for fibroblasts and for primary heart tissue:
+This file structure should be present in the example data:
 
 ```
 $ tree sc2heoca_example_data/
