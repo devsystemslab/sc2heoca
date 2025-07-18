@@ -1,6 +1,6 @@
 ## Frequently Asked Question
 
-### What kind of data can I compare with HEOCA?
+### What kind of data can I compare with the HEOCA?
 
 Single cell data in a fitting anndata format. Typical would be the evaluation of new organoid models and/or disease models.
 
