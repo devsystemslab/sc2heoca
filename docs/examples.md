@@ -28,7 +28,7 @@ rm sc2heoca_example_data.tgz
 To run a full sc2heoca analysis you will need:
 
 * reference model files (updated models can be found in the model description section)
-* single-cell RNA-seq expression row counts (e.g. example counts of lung COPD data, GSE186017)
+* single-cell RNA-seq expression row counts (e.g. example counts of lung COPD data; GEO database - GSE186017)
 
 This file structure should be present in the example data:
 
@@ -65,7 +65,10 @@ query = Query(model_dir=model_dir, load_ref=True)
 adata_query = query.run_scpoli(adata_query=adata_query, 
                                sample_name='GSM5628936_SCNPO2')
 ```
-
+### Perform the label transfer
+```
+adata_query, adata_knn_graph = query.scpoli_label_transfer(adata_query)
+```
 ### Plot query result UMAP
 ```
 adata4plot = query.merge4plot(adata_query)
@@ -74,7 +77,7 @@ sc.pl.umap(adata4plot, color=['predict_level_2'],
             frameon=False, size=5)
 ```
 
-### Find DE genes to HECOA
+### Find DE genes to HEOCA
 
 ```
 de_res = query.find_de_genes(adata_query)
@@ -83,7 +86,10 @@ de_res = query.find_de_genes(adata_query)
 
 ### Off-target analysis
 ```
+from sc2heoca.target import Target
+
 target = Target('fetal', model_dir)
+target.adata_latent_source.obs["celltype"] = 'na'
 target_res = target.get_target(adata_query=adata_query, 
                             sample_name='sample_name')
 ```
