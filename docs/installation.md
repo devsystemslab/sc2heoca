@@ -37,9 +37,9 @@ You can install sc2heoca with `pip`.
 $ pip install git+https://github.com/devsystemslab/sc2heoca
 ```
 
-### Install R
+### Install R 
 
-Install R and rpy2
+Install R and rpy2 if you plan to perform maturation analysis
 
 ``` bash
 mamba install conda-forge::r-base
