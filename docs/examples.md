@@ -76,6 +76,7 @@ sc.pl.umap(adata4plot, color=['predict_level_2'],
             palette=query.colorpalette,
             frameon=False, size=5)
 ```
+![COPD query to reference plot](figures/GSM5628936_SCNPO2.png)
 
 ### Find DE genes to HEOCA
 
